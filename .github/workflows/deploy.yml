@@ -17,7 +17,7 @@ jobs:
           dotnet-version: "9.0.x"
 
       - name: Publish
-        run: dotnet publish src/WorkTimeCalculator.Wasm/WorkTimeCalculator.Wasm.csproj -c Release -o publish
+        run: dotnet publish src/WorkTimeCalculator.Wasm/WorkTimeCalculator.Wasm.csproj -c Release -o publish -p:BlazorBaseHref=/WorkTimeCalculator/
 
       - name: Add .nojekyll
         run: touch publish/wwwroot/.nojekyll
