@@ -1,7 +1,61 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Work Time Calculator</PageTitle>
+<h1>Work Time Calculator</h1>
 
-<h1>Hello, world!</h1>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
 
-Welcome to your new app.
+            <div class="mb-3">
+                <label class="form-label">Arbetstid (timmar)</label>
+                <input type="text" class="form-control" @bind="arbetstid" placeholder="ex. 7.7 eller 7,7" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Starttid</label>
+                <input type="time" class="form-control" @bind="starttid" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Lunch (minuter)</label>
+                <input type="number" class="form-control" @bind="lunch" placeholder="ex. 45" />
+            </div>
+
+            <button class="btn btn-primary" @onclick="Berakna">Beräkna</button>
+            @if (!string.IsNullOrEmpty(resultat))
+            {
+                <div class="alert alert-success mt-3">
+                    <strong>@resultat</strong>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private string arbetstid = "";
+    private TimeOnly starttid = new TimeOnly(7, 30);
+    private int lunch = 45;
+
+    private string resultat = "";
+
+    private void Berakna()
+    {
+        string normaliserad = arbetstid.Replace(",", ".");
+
+        if (!double.TryParse(normaliserad, System.Globalization.NumberStyles.Any,
+            System.Globalization.CultureInfo.InvariantCulture, out double timmar))
+        {
+            resultat = "Ogiltig arbetstid – ange ex. 7.7 eller 7,7";
+            return;
+        }
+
+        int totalMinuter = (int)(timmar * 60) + lunch;
+        TimeOnly hemgangstid = starttid.AddMinutes(totalMinuter);
+
+        resultat = $"Du kan gå hem kl: {hemgangstid:HH:mm}";
+    }
+}
